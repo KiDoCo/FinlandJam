@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     RaycastHit hit;
     public float speed;
-    
+
     SpriteRenderer Sprite;
     BoxCollider Coll;
     BoxCollider HitZone;
@@ -27,9 +27,17 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator coroutine;
     public float Health;
     Slider HPSlider;
-    
-    
+    public AudioSource PlayerAudio;
+    public AudioClip[] PlayerSounds;
+    public AudioSource Walk;
+    public bool win;
+    public bool IsGrounded;
 
+    void Awake()
+    {
+        Health = 100;
+
+    }
 
     void Start()
     {
@@ -37,37 +45,30 @@ public class PlayerMovement : MonoBehaviour
         Coll = GameObject.Find("PlayerHitZone").GetComponent<BoxCollider>();
         HitZone = GameObject.Find("PlayerHitZone").GetComponent<BoxCollider>();
         anim = gameObject.GetComponentInChildren<Animator>();
-        
-        Health = 100;
-        //if (/*player 1*/)
-        //{
-        //    HPSlider = GameObject.Find("HUDPanel/HealthBar1").GetComponent<Slider>();
-        //}
-        //if (/*player2*/)
-        //{
-        //    HPSlider = GameObject.Find("HUDPanel/HealthBar2").GetComponent<Slider>();
-        //}
-
-        
+        PlayerAudio = gameObject.GetComponent<AudioSource>();
+        //Walk = GameObject.FindWithTag("Sound").GetComponent<AudioSource>();
+        win = false;
         CanPunch = true;
         CanBlock = true;
-
+        
 
     }
 
 
     void FixedUpdate()
     {
+        // }
 
         if (gameObject.name == "Player1")
         {
             //Liikkuuko pelaaja?
-            if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0 )
+            if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
             {
                 anim.SetBool("Move", false); // ei liiku --> Idle
             }
             else
             {
+
                 //Vertical Movement
                 if (Input.GetAxis("Horizontal") > 0)
                 {
@@ -96,14 +97,17 @@ public class PlayerMovement : MonoBehaviour
                     anim.SetBool("Move", true);
                     transform.Translate(new Vector3(0, 0, -speed * Time.deltaTime));
                 }
+               
             }
         }
         else if (gameObject.name == "Player2")
         {
-            if (Input.GetAxis("Horizontal2") == 0 && Input.GetAxis("Vertical2") == 0 )
+
+            if (Input.GetAxis("Horizontal2") == 0 && Input.GetAxis("Vertical2") == 0)
             {
                 anim.SetBool("Move", false); // ei liiku --> Idle
             }
+           
             else
             {
                 //Vertical Movement
@@ -139,6 +143,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             return;
+
         }
 
 
@@ -146,9 +151,11 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
+
         //lyönti
-        if (Input.GetKey(KeyCode.F) && CanPunch && gameObject.name == "Player1")
+        if (Input.GetKey(KeyCode.C) && CanPunch && gameObject.name == "Player1")
         {
+            PunchSound();
             if (Side && CanPunch)
             {
 
@@ -175,8 +182,9 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
         }
-        else if (Input.GetKey(KeyCode.RightShift) && CanPunch && gameObject.name == "Player2")
+        else if (Input.GetKey(KeyCode.P) && CanPunch && gameObject.name == "Player2")
         {
+            PunchSound();
             if (Side && CanPunch)
             {
 
@@ -198,27 +206,24 @@ public class PlayerMovement : MonoBehaviour
                 coroutine = Timing(1);
                 StartCoroutine(coroutine);
             }
-            else
-            {
-                return;
-            }
+
         }
         //blokkaus
-        else if (Input.GetKey(KeyCode.V) && CanBlock  && gameObject.name == "Player1")
+        else if (Input.GetKey(KeyCode.V) && CanBlock && gameObject.name == "Player1")
         {
             anim.SetBool("Block", true);
             Sprite.enabled = true;
-            HitZone.enabled = false;
+
             CanBlock = false;
             Blocked = true;
             coroutine = BlockTimer(1);
             StartCoroutine(coroutine);
         }
-        else if (Input.GetKey(KeyCode.RightControl) && CanBlock && gameObject.name == "Player2")
+        else if (Input.GetKey(KeyCode.O) && CanBlock && gameObject.name == "Player2")
         {
             anim.SetBool("Block", true);
             Sprite.enabled = true;
-            HitZone.enabled = false;
+
             CanBlock = false;
             Blocked = true;
             coroutine = BlockTimer(1);
@@ -230,12 +235,39 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.gameObject.tag == "Punch" && !Blocked)
         {
+
             anim.SetBool("Damage", true);
+            HitSound();
+            PlayerAudio.clip = PlayerSounds[0];
+            PlayerAudio.Play();
+
             Invoke("DamageZero", 0.5f);
-            
+
+
             //HPSlider.value -= damage;
         }
+        else if (other.gameObject.tag == "Homo")
+        {
+            if (Health < 100)
+            {
+                Health += 20;
+                Destroy(other.gameObject);
 
+            }
+            else
+            {
+                return;
+            }
+
+        }
+    }
+
+    private void OnCollisionEnter(Collision coll)
+    {
+        if(coll.gameObject.tag == "Ground")
+        {
+            IsGrounded = true;
+        }
     }
 
     //Ajanlaskijat
@@ -253,7 +285,7 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         anim.SetBool("Block", false);
-        HitZone.enabled = true;
+        Blocked = false;
         yield return new WaitForSeconds(Timer);
         CanBlock = true;
     }
@@ -264,14 +296,46 @@ public class PlayerMovement : MonoBehaviour
 
 
     }
+    //damagecheck
     private void DamageZero()
     {
         anim.SetBool("Damage", false);
         Health = Health - 5;
     }
-    private void PlaySound()
+    //äänet
+    public void PlaySound()
     {
+        if (!win)
+        {
+            PlayerAudio.clip = PlayerSounds[2];
+            PlayerAudio.Play();
+            win = true;
+        }
+
+
+
 
     }
-    
+    private void WalkingSound()
+    {
+
+        PlayerAudio.clip = PlayerSounds[4];
+        PlayerAudio.Play();
+    }
+    private void HitSound()
+    {
+        if (CanPunch)
+
+
+
+
+            PlayerAudio.clip = PlayerSounds[1];
+        PlayerAudio.Play();
+
+    }
+    private void PunchSound()
+    {
+        PlayerAudio.clip = PlayerSounds[3];
+        PlayerAudio.Play();
+    }
 }

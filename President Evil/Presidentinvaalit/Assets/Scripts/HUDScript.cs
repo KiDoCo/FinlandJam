@@ -6,47 +6,61 @@ using UnityEngine.UI;
 
 public class HUDScript : MonoBehaviour
 {
+    public GameObject P1WinText;
+    public GameObject P2WinText;
+    public GameObject drawText;
     public GameObject returnButton;
     public Slider healthBar1, healthBar2;
-    public Text timerText, winnerText;
+    public Text timerText;
     PlayerMovement Playerscrah1;
     PlayerMovement Playerscrah2;
     public int startTime;
     LevelManager Lvlmng;
     float time;
     public AudioClip WinSound;
-    bool player1Wins = false;
-    bool player2Wins = false;
-    bool draw = false;
-    public AudioSource audio;
+    bool player1Wins;
+    bool player2Wins;
+    bool draw;
+    public AudioSource P1Audio;
+    public AudioSource P2Audio;
+    public AudioClip P1;
+    public AudioClip P2;
+    bool death;
     public AudioSource Level;
-    public AudioClip[] Sounds;
     int Index;
-    bool FoundPlayer = true;
+
+    bool IsLoaded;
     void Start()
     {
         Lvlmng = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         Level = GameObject.Find("LevelManager").GetComponent<AudioSource>();
+        player1Wins = false;
+        player2Wins = false;
+        draw = false;
         time = startTime;
+        death = false;
+
         timerText.text = startTime.ToString();
-        
+        IsLoaded = false;
+
     }
 
     void Update()
     {
-        
-        if (!Lvlmng.spawn1 && !Lvlmng.spawn2)
+
+        if (!Lvlmng.spawn1 && !Lvlmng.spawn2 && !death)
         {
             Playerscrah1 = GameObject.Find("Player1").GetComponent<PlayerMovement>();
             Playerscrah2 = GameObject.Find("Player2").GetComponent<PlayerMovement>();
+            P1Audio = GameObject.Find("Player1").GetComponent<AudioSource>();
+            P2Audio = GameObject.Find("Player2").GetComponent<AudioSource>();
             healthBar1.value = Playerscrah1.Health;
             healthBar2.value = Playerscrah2.Health;
-           
+
+            IsLoaded = true;
+
         }
-        if (FoundPlayer)
-        {
-            FoundPlayer = false;
-        }
+
         RoundTimer();
         CheckHealth();
         CheckFlags();
@@ -68,63 +82,71 @@ public class HUDScript : MonoBehaviour
         if (time <= 0)
         {
             timerText.text = "00";
-            if (healthBar1.value > healthBar2.value)
+            if (healthBar1.value > healthBar2.value && IsLoaded)
             {
                 player1Wins = true;
             }
-            else if (healthBar1.value < healthBar2.value)
+            else if (healthBar1.value < healthBar2.value && IsLoaded)
             {
                 player2Wins = true;
+
+            }
+            else if (IsLoaded)
+            {
+                draw = true;
             }
             else
             {
-                draw = true;
+                return;
             }
         }
     }
     void CheckHealth()
     {
-        if (healthBar1.value <= 0)
+
+
+        if (Playerscrah1.Health <= 0 && IsLoaded)
         {
             player2Wins = true;
+            Debug.Log("CheckHelaat");
         }
-        else if (healthBar2.value <= 0)
+        else if (Playerscrah2.Health <= 0 && IsLoaded)
         {
             player1Wins = true;
         }
-        else if (healthBar1.value <= 0 && healthBar2.value <= 0)
+        else if (healthBar1.value <= 0 && healthBar2.value <= 0 && IsLoaded)
         {
             draw = true;
         }
+
     }
     void CheckFlags()
     {
-        if (player1Wins)
+        if (player1Wins && IsLoaded)
         {
             Level.Stop();
-            Index = Lvlmng.SelectionSound;
-            Debug.Log(Index);
-            audio.clip = Sounds[Index];
-            audio.Play();
-            winnerText.text = "PLAYER 1 WINS!";
+            Playerscrah1.PlaySound();
+
+            death = true;
+            Destroy(Lvlmng.Player2);
+            P1WinText.SetActive(true);
             returnButton.SetActive(true);
         }
-        else if (player2Wins)
+        else if (player2Wins && IsLoaded)
         {
             Level.Stop();
-            Debug.Log(Index);
-            Index = Lvlmng.SelectionSound2;
-            audio.clip = Sounds[Index];
-            audio.Play();
-            winnerText.text = "PLAYER 2 WINS!";
+            Playerscrah2.PlaySound();
+            death = true;
+            Destroy(Lvlmng.Player1);
+            P2WinText.SetActive(true);
             returnButton.SetActive(true);
         }
-        else if (draw)
+        else if (draw && IsLoaded)
         {
-            
-            winnerText.text = "ROUND IS DRAW!";
+
+            drawText.SetActive(true);
             returnButton.SetActive(true);
         }
     }
-    
+
 }
