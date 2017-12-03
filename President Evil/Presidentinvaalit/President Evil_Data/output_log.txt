@@ -1,0 +1,54 @@
+Initialize engine version: 5.6.2f1 (a2913c821e27)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GT 730 (ID=0x1287)
+    Vendor:   NVIDIA
+    VRAM:     1994 MB
+    Driver:   21.21.13.7290
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\JoonasTuo\Documents\Presidentinvaalit\President Evil_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\JoonasTuo\Documents\Presidentinvaalit\President Evil_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\JoonasTuo\Documents\Presidentinvaalit\President Evil_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\JoonasTuo\Documents\Presidentinvaalit\President Evil_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\JoonasTuo\Documents\Presidentinvaalit\President Evil_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\JoonasTuo\Documents\Presidentinvaalit\President Evil_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\JoonasTuo\Documents\Presidentinvaalit\President Evil_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\JoonasTuo\Documents\Presidentinvaalit\President Evil_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+- Completed reload, in  0.029 seconds
+Platform assembly: C:\Users\JoonasTuo\Documents\Presidentinvaalit\President Evil_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\JoonasTuo\Documents\Presidentinvaalit\President Evil_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 3840x1080 at -1920,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 3.330245 ms
+Setting up 4 worker threads for Enlighten.
+  Thread -> id: 1870 -> priority: 1 
+  Thread -> id: 1930 -> priority: 1 
+  Thread -> id: 1d18 -> priority: 1 
+  Thread -> id: 1644 -> priority: 1 
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 3.335353 ms
+
+Unloading 13 unused Assets to reduce memory usage. Loaded Objects now: 360.
+Total: 0.304333 ms (FindLiveObjects: 0.020429 ms CreateObjectMapping: 0.025235 ms MarkObjects: 0.202788 ms  DeleteObjects: 0.055579 ms)
+
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 0.380041 ms
+
+Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 724.
+Total: 0.343689 ms (FindLiveObjects: 0.044162 ms CreateObjectMapping: 0.020429 ms MarkObjects: 0.218411 ms  DeleteObjects: 0.060085 ms)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at HUDScript.CheckHealth () [0x00000] in <filename unknown>:0 
+  at HUDScript.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 2.320206 ms
+
+Unloading 237 unused Assets to reduce memory usage. Loaded Objects now: 346.
+Total: 2.583982 ms (FindLiveObjects: 0.038454 ms CreateObjectMapping: 0.035150 ms MarkObjects: 0.210299 ms  DeleteObjects: 2.299176 ms)
+
